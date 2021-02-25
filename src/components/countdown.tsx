@@ -1,42 +1,21 @@
-import { useContext, useEffect, useState } from 'react'
-import {ChallengesContexts} from '../contexts/ChallengeContexts'
+import { useContext} from 'react'
+import { CountDownContext } from '../contexts/CountDownContext'
 import styles from '../styles/components/countdown.module.css'
 
-let countdownSetTimeOut : NodeJS.Timeout;
-
 export function CountDown(){
-    const {startNewChallenge} = useContext(ChallengesContexts)
-
-    const [time, setTime] = useState(0.05 * 60)
-    const [isActive, setIsActive] = useState(false)
-    const [hasFinished, setHasFinished] = useState(false)
-
-    const minutes = Math.floor(time/60)
-    const segunds = time%60
+    
+    const {
+        minutes,
+        segunds,
+        hasFinished,
+        isActive,
+        resetCountdown,
+        startCountdown } = useContext(CountDownContext)
 
     const [minutesLeft, minutesRigth] = String(minutes).padStart(2, '0').split('')
     const [segundsLeft, segundsRigth] = String(segunds).padStart(2, '0').split('')
 
-    function startCountdown(){
-        setIsActive(true)
-    }
-    function resetCountdown(){
-        clearTimeout(countdownSetTimeOut)
-        setIsActive(false)
-        setTime(25*60)
-
-    }
-    useEffect(() => {
-        if(isActive && time > 0){
-            countdownSetTimeOut = setTimeout(() => {
-                setTime(time - 1)
-            }, 1000)
-        }else if(isActive && time === 0){
-            setHasFinished(true)
-            setIsActive(false)
-            startNewChallenge()
-        }
-    }, [isActive, time])
+   
     return(
         <div>
             <div className={styles.countDownContainer}>
@@ -62,7 +41,8 @@ export function CountDown(){
                     {isActive ? (
                         <button
                             type="button"
-                            className={`${styles.countDownButton} ${styles.countDownButtonActive}`}
+                            className={`${styles.countDownButton}
+                            ${styles.countDownButtonActive}`}
                             onClick={resetCountdown}
                             >
                             Abandonar Ciclo
